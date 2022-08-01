@@ -1,5 +1,5 @@
 from django.urls import path
-from payapi.views import coffee_obj, get_coffee, UserRegistrationView, UserLoginView, User_view
+from payapi.views import coffee_obj, get_coffee, UserRegistrationView, UserLoginView, User_view, UserChangePassword
 from . import views
 
 urlpatterns = [
@@ -10,4 +10,5 @@ urlpatterns = [
     path('register/', UserRegistrationView.as_view(), name='register'),
     path('login/', UserLoginView.as_view(), name='login'),
     path('user_details/<str:name>', views.User_view),
+    path('change_password/', UserChangePassword.as_view()),
 ]

@@ -1,5 +1,7 @@
+from dataclasses import fields
 from rest_framework import serializers
 from .models import Coffee, User
+from django.contrib.auth.password_validation import validate_password
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(style={'input_type':'password'}, write_only=True)
@@ -37,3 +39,20 @@ class CofeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Coffee
         fields = ['id', 'name', 'amount', 'payment_id', 'paid']
+
+class UserChangePasswordSerializer(serializers.Serializer):
+    password = serializers.CharField(max_length=1000, style={'input_type':'password'}, write_only=True)
+    password2 = serializers.CharField(max_length=1000, style={'input_type':'password'}, write_only=True)
+
+    class Meta:
+        fields = ['password', 'password2']
+
+    def validate(self, data):
+        password = data.get('password')
+        password2 = data.get('password2')
+        user = self.context.get('user')
+        if password != password2:
+            raise serializers.ValidationError('Password is not matched')
+        user.set_password(password)
+        user.save()    
+        return data        

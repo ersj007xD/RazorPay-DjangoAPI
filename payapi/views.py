@@ -1,6 +1,6 @@
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import CofeeSerializer, UserRegistrationSerializer, UserLoginSerializer, UserViewSerializer
+from .serializers import CofeeSerializer, UserRegistrationSerializer, UserLoginSerializer, UserViewSerializer, UserChangePasswordSerializer
 from .models import Coffee, User
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate
@@ -130,4 +130,15 @@ def update_coffee(request,pk):
             result['data'] = serializer.data
             return Response({'status':True, 'result':result, 'message':'Coffee Object updated Successfully !'})
     except Exception as error:
-        return Response({'status':False, 'result':dict(), 'message':'Coffee Object not updated Successfully !'})               
+        return Response({'status':False, 'result':dict(), 'message':'Coffee Object not updated Successfully !'})
+
+class UserChangePassword(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    def post(self,request):
+        data = request.data
+        serializer = UserChangePasswordSerializer(data=data, context = {'user':request.user})
+        if serializer.is_valid(raise_exception=True):
+            return Response({'status':True, 'message':'Password Changed Successfully !'})
+        else:
+            return Response({'status':False, 'message':'Password not matched !'})    
