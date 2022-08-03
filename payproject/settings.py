@@ -25,6 +25,14 @@ SECRET_KEY = ''
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+PASSWORD_RESET_TIMEOUT = 300
+
+#EMAIL_CONFIG
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST  = "smtp.gmail.com"
+EMAIL_PORT = 587
+
 ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'payapi.User'

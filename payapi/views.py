@@ -1,6 +1,6 @@
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import CofeeSerializer, UserRegistrationSerializer, UserLoginSerializer, UserViewSerializer, UserChangePasswordSerializer
+from .serializers import CofeeSerializer, UserRegistrationSerializer, UserLoginSerializer, UserViewSerializer, UserChangePasswordSerializer, SendPasswordResetEmailSerializer, UserPasswordResetSerializer
 from .models import Coffee, User
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate
@@ -9,6 +9,7 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 import razorpay
+
 
 razor_key_id = ''
 razor_secret_id = ''
@@ -142,3 +143,23 @@ class UserChangePassword(APIView):
             return Response({'status':True, 'message':'Password Changed Successfully !'})
         else:
             return Response({'status':False, 'message':'Password not matched !'})    
+
+class SendPasswordResetEmail(APIView):
+    def post(self,request):
+        data = request.data
+        serializer = SendPasswordResetEmailSerializer(data=data)
+        if serializer.is_valid(raise_exception=True):
+            return Response({'status':True, 'message':'Password Resent Link Sent Successfully !'})
+        else:
+            return Response({'status':False, 'message':'Password Link not sent Successfully !'})
+
+class UserpasswordReset(APIView):
+    def post(self,request, uid, token):
+        data = request.data
+        serializer =  UserPasswordResetSerializer(data=data, context={'uid':uid, 'token':token})
+        if serializer.is_valid(raise_exception=True):
+            return Response({'status':True, 'message':'Password Reset Successfully !'})
+        else:
+            return Response({'status':False, 'message':'Password not ResetSuccessfully !'})    
+
+        
